@@ -1,0 +1,23 @@
+With
+MEMBER Measures.[本月销量] AS sum( ([Date].[Date].&[20120501]:[Date].[Date].&[20120531]), [Measures].[Internet Sales-Order Quantity] ) MEMBER Measures.[上月销量] AS sum( ([Date].[Date].&[20120401]:[Date].[Date].&[20120531]), [Measures].[Internet Sales-Order Quantity] ) MEMBER Measures.[去年本月销量] AS sum( ([Date].[Date].&[20110501]:[Date].[Date].&[20110531]), [Measures].[Internet Sales-Order Quantity] )
+
+member [Measures].[上年销量同比] as
+(([Measures].[本月销量]-Measures.[去年本月销量])/Measures.[去年本月销量]),format_string="Percent"
+
+member [Measures].[上月销量环比] as
+(([Measures].[本月销量]-Measures.[上月销量])/Measures.[上月销量]),format_string="Percent"
+
+ select 
+{Measures.[本月销量],Measures.[上月销量],Measures.[去年本月销量], [Measures].[上年销量同比], [Measures].[上月销量环比] }on 0,
+ non empty{ 
+            topcount( 
+                      order( 
+                          FILTER( ([Customer].[City].[City]), ([Measures].[本月销量] < 5  ))
+                          ,[Measures].[本月销量] 
+                          , desc
+                           )
+                      ,4
+                      ,[Measures].[本月销量] 
+                    )
+           } on 1 
+from [Analysis Services Tutorial]
