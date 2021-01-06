@@ -187,7 +187,88 @@ namespace ADOMD.netTest
                 Console.WriteLine($"耗时0--{times}");
             }
 
+            {
+                Stopwatch sw = new Stopwatch();
+                //开始计时  
+                sw.Start();
 
+                StringBuilder builder = new StringBuilder();
+                builder.Append("with");
+                builder.Append(" member zzz as [Measures].[Internet Sales Count]");
+                builder.Append(" set aaa as NONEMPTY ({ zzz })");
+                builder.Append(" set rowss as NONEMPTY ({ subset(");
+                builder.Append(" (filter([Customer].[City].[City].ALLMEMBERS *[Date].[Date].[Date],zzz>1))");
+                builder.Append(" ,0,20");
+                builder.Append(" )})");
+                builder.Append(" SELECT ");
+                builder.Append(" NON EMPTY { aaa } ON COLUMNS,");
+                builder.Append(" NON EMPTY { ");
+                builder.Append("  rowss");
+                builder.Append(" }");
+                builder.Append(" DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS");
+                builder.Append(" FROM [Analysis Services Tutorial]");
+              
+
+                var list = TestDemo.GetDataByCon(builder.ToString());
+
+                // 结束计时
+                sw.Stop();
+                //获取运行时间[毫秒]  
+                long times = sw.ElapsedMilliseconds;
+                Console.WriteLine($"耗时4--{times}");
+            }
+
+            {
+                Stopwatch sw = new Stopwatch();
+                //开始计时  
+                sw.Start();
+
+                StringBuilder builder = new StringBuilder();
+                builder.Append("with");
+                builder.Append(" MEMBER Measures.[本月销量] AS sum( ([Date].[Date].&[20120501]:[Date].[Date].&[20120531]), [Measures].[Internet Sales-Order Quantity] ) ");
+                builder.Append(" MEMBER Measures.[上月销量] AS sum( ([Date].[Date].&[20120401]:[Date].[Date].&[20120531]), [Measures].[Internet Sales-Order Quantity] ) ");
+                builder.Append(" MEMBER Measures.[去年本月销量] AS sum( ([Date].[Date].&[20110501]:[Date].[Date].&[20110531]), [Measures].[Internet Sales-Order Quantity] )");
+                builder.Append(" MEMBER Measures.[上年销量同比] as ((Measures.[本月销量]-Measures.[去年本月销量])/Measures.[去年本月销量]),format_string='Percent'");
+                builder.Append(" MEMBER Measures.[上月销量环比] as ((Measures.[本月销量]-Measures.[上月销量])/Measures.[上月销量]),format_string='Percent'");
+                builder.Append(" MEMBER Measures.[本月销量1] AS sum(([Date].[Date].&[20120501]:[Date].[Date].&[20120531]), [Measures].[Reseller Sales Count] ) ");
+                builder.Append(" MEMBER Measures.[上月销量1] AS sum(([Date].[Date].&[20120401]:[Date].[Date].&[20120531]), [Measures].[Reseller Sales Count] ) ");
+                builder.Append(" MEMBER Measures.[去年本月销量1] AS sum(([Date].[Date].&[20110501]:[Date].[Date].&[20110531]),[Measures].[Reseller Sales Count] )");
+                builder.Append(" MEMBER Measures.[上年销量同比1] as ((Measures.[本月销量1]- Measures.[去年本月销量1])/ Measures.[去年本月销量1]),format_string = 'Percent'");
+                builder.Append(" MEMBER Measures.[上月销量环比1] as ((Measures.[本月销量1]- Measures.[上月销量1])/ Measures.[上月销量1]),format_string = 'Percent'"); 
+                builder.Append(" MEMBER Measures.[本月销量2] AS sum(([Date].[Date].&[20120501]:[Date].[Date].&[20120531]), [Measures].[Reseller Sales-Tax Amount] ) ");
+                builder.Append(" MEMBER Measures.[上月销量2] AS sum(([Date].[Date].&[20120401]:[Date].[Date].&[20120531]), [Measures].[Reseller Sales-Tax Amount]) ");
+                builder.Append(" MEMBER Measures.[去年本月销量2] AS sum(([Date].[Date].&[20110501]:[Date].[Date].&[20110531]),[Measures].[Reseller Sales-Tax Amount])");
+                builder.Append(" MEMBER Measures.[上年销量同比2] as ((Measures.[本月销量2]- Measures.[去年本月销量2])/ Measures.[去年本月销量2]),format_string = 'Percent'");
+                builder.Append(" MEMBER Measures.[上月销量环比2] as ((Measures.[本月销量2]- Measures.[上月销量2])/ Measures.[上月销量2]),format_string = 'Percent'");
+                builder.Append(" select ");
+                builder.Append(" {");
+                builder.Append(" Measures.[本月销量],");
+                builder.Append(" Measures.[上月销量],");
+                builder.Append(" Measures.[去年本月销量], ");
+                builder.Append(" Measures.[上年销量同比], ");
+                builder.Append(" Measures.[上月销量环比],");
+                builder.Append(" Measures.[本月销量1],");
+                builder.Append(" Measures.[上月销量1],");
+                builder.Append(" Measures.[去年本月销量1], ");
+                builder.Append(" Measures.[上年销量同比1], ");
+                builder.Append(" Measures.[上月销量环比1],");
+                builder.Append(" Measures.[本月销量2],");
+                builder.Append(" Measures.[上月销量2],");
+                builder.Append(" Measures.[去年本月销量2], ");
+                builder.Append(" Measures.[上年销量同比2], ");
+                builder.Append(" Measures.[上月销量环比2]");
+                builder.Append(" }");
+                builder.Append(" on 0");
+                builder.Append(" from [Analysis Services Tutorial]");
+
+                var list = TestDemo.GetDataByCon(builder.ToString());
+
+                // 结束计时
+                sw.Stop();
+                //获取运行时间[毫秒]  
+                long times = sw.ElapsedMilliseconds;
+                Console.WriteLine($"耗时5--{times}");
+            }
 
 
 
